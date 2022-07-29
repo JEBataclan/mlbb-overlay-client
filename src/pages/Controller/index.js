@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import openSocket from "socket.io-client";
 import * as colors from "../../colors";
-import { SEQUENCE } from '../../constants';
+import { SEQUENCE, InitialTeamInfos, InitialPicksAndBans } from '../../constants';
 import {
   Input,
   Button,
+  LockInButton,
   TopSection,
   MiddleSection,
   BottomSection,
@@ -18,7 +19,6 @@ import {
   ListItem,
   HeroesContainer,
   HeroesWrapper,
-  Timer,
   MatchInfoContainer,
   ButtonsContainer,
 } from './controller.elements';
@@ -178,6 +178,78 @@ const Controller = () => {
     }
   }
 
+  const handleSwapTeam = () => {
+    setTeamInfos(prevTeamInfos => {
+      let newTeamInfos = Object.assign({}, prevTeamInfos);
+      [newTeamInfos.blue, newTeamInfos.red] = [newTeamInfos.red, newTeamInfos.blue]
+      socket.emit(newTeamInfos);
+      return newTeamInfos;
+    })
+  }
+
+  const handleClearTeamInfos = () => {
+    setTeamInfos({
+      blue: {
+        teamName: "",
+        teamInitials: "",
+        score: 0,
+        players: ['', '', '', '', ''],
+      },
+      red: {
+        teamName: "",
+        teamInitials: "",
+        score: 0,
+        players: ['', '', '', '', ''],
+      }
+    });
+    socket.emit("sendTeamInfos", {
+      blue: {
+        teamName: "",
+        teamInitials: "",
+        score: 0,
+        players: ['', '', '', '', ''],
+      },
+      red: {
+        teamName: "",
+        teamInitials: "",
+        score: 0,
+        players: ['', '', '', '', ''],
+      }
+    });
+  }
+
+  const handleClearPicksAndBans = () => {
+    setPicksAndBans({
+      blue: {
+        picks: ['', '', '', '', ''],
+        picksCount: 0,
+        bans: ['', '', ''],
+        bansCount: 0,
+      },
+      red: {
+        picks: ['', '', '', '', ''],
+        picksCount: 0,
+        bans: ['', '', ''],
+        bansCount: 0,
+      }
+    });
+    setCounter(0);
+    socket.emit("sendPicksAndBans", {
+      blue: {
+        picks: ['', '', '', '', ''],
+        picksCount: 0,
+        bans: ['', '', ''],
+        bansCount: 0,
+      },
+      red: {
+        picks: ['', '', '', '', ''],
+        picksCount: 0,
+        bans: ['', '', ''],
+        bansCount: 0,
+      }
+    });
+  }
+
   const handlePlayerNameChange = (e, team, index) => {
     setTeamInfos(prevTeamInfos => {
       let newTeamInfos = Object.assign({}, prevTeamInfos);
@@ -199,21 +271,20 @@ const Controller = () => {
     <ControllerContainer>
       <TopSection>
         <TeamInfosContainer backgroundColor={colors.blue}>
-          <Input name="teamInitials" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
-          <Input name="teamName" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
-          <Input name="score" type="number" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamInitials" placeholder="Team Initials" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" placeholder="Team Name" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" placeholder="Score" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
         </TeamInfosContainer>
 
         <MatchInfoContainer>
-          <Timer>:35</Timer>
-          <Input name="round" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
-          <Input name="game" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+          <Input name="round" placeholder="Round" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+          <Input name="game" placeholder="Game #" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
         </MatchInfoContainer>
 
         <TeamInfosContainer backgroundColor={colors.red}>
-          <Input name="teamInitials" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
-          <Input name="teamName" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
-          <Input name="score" type="number" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamInitials" placeholder="Team Initials" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" placeholder="Team Name" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" placeholder="Score" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
         </TeamInfosContainer>
       </TopSection>
 
@@ -226,6 +297,7 @@ const Controller = () => {
                 index={index}
                 team="blue"
                 hero={item}
+                IGN={teamInfos.blue.players[index]}
                 handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'blue', index) }}
                 handleTeamInfosBlur={handleTeamInfosBlur}
                 handleDragStart={handleDragStart}
@@ -246,11 +318,12 @@ const Controller = () => {
               <ListItem onClick={() => setFilter(filter === "marksman" ? "" : "marksman")}>Marksman</ListItem>
               <ListItem onClick={() => setFilter(filter === "support" ? "" : "support")}>Support</ListItem>
               <ListItem>
-                <input
+                <Input
                   id="filter"
                   name="filter"
                   type="text"
                   value={filter}
+                  placeholder="Search..."
                   onChange={(event) => setFilter(event.target.value)}
                 />
               </ListItem>
@@ -281,6 +354,7 @@ const Controller = () => {
                 index={index}
                 team="red"
                 hero={item}
+                IGN={teamInfos.red.players[index]}
                 handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'red', index) }}
                 handleTeamInfosBlur={handleTeamInfosBlur}
                 handleDragStart={handleDragStart}
@@ -302,10 +376,10 @@ const Controller = () => {
         </BansContainer>
 
         <ButtonsContainer>
-          <Button onClick={handleLockIn} disabled={counter > 15}>LOCK IN</Button>
-          <Button onClick={() => { }}>START TIMER</Button>
-          <Button onClick={() => { }}>CLEAR PICKS & BANS</Button>
-          <Button onClick={() => { }}>CLEAR TEAM INFOS</Button>
+          <LockInButton onClick={handleLockIn} disabled={counter > 15}>LOCK IN</LockInButton>
+          <Button onClick={handleSwapTeam}>SWAP TEAM</Button>
+          <Button onClick={handleClearPicksAndBans}>CLEAR PICKS & BANS</Button>
+          <Button onClick={handleClearTeamInfos}>CLEAR TEAM INFOS</Button>
         </ButtonsContainer>
 
         <BansContainer direction="rtl">

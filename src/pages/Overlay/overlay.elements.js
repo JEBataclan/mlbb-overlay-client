@@ -4,7 +4,6 @@ import * as colors from "../../colors";
 export const OverlayContainer = styled.div`
     width: 1920px;
     height: 1080px;
-    background-color: #1a1a1a;
 `;
 
 export const TeamInfosContainer = styled.div`

@@ -12,7 +12,7 @@ const PickContainer = styled.div`
   `};
 `
 
-const Pick = ({ index, team, hero, handlePlayerNameChange, handleTeamInfosBlur, handleDragStart, handleDragOver, handleDrop }) => {
+const Pick = ({ IGN, index, team, hero, handlePlayerNameChange, handleTeamInfosBlur, handleDragStart, handleDragOver, handleDrop }) => {
   return (
     <PickContainer
       slot={index}
@@ -23,6 +23,8 @@ const Pick = ({ index, team, hero, handlePlayerNameChange, handleTeamInfosBlur, 
       onDrop={e => handleDrop(e, team)}
     >
       <Input
+        value={IGN}
+        placeholder={`Player ${index + 1} IGN`}
         onChange={handlePlayerNameChange}
         onBlur={handleTeamInfosBlur} />
     </PickContainer>

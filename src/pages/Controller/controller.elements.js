@@ -4,6 +4,12 @@ export const Input = styled.input``;
 
 export const Button = styled.button``;
 
+export const LockInButton = styled(Button)`
+    width: 100px;
+    height: 75px;
+    margin-right: 50px;
+`
+
 export const Timer = styled.p``;
 
 export const ControllerContainer = styled.div`
