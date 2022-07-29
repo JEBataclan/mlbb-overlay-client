@@ -12,15 +12,15 @@ const PickContainer = styled.div`
   `};
 `
 
-const Pick = ({ index, hero, handlePlayerNameChange, handleTeamInfosBlur, handleDragStart, handleDragOver, handleDrop }) => {
+const Pick = ({ index, team, hero, handlePlayerNameChange, handleTeamInfosBlur, handleDragStart, handleDragOver, handleDrop }) => {
   return (
     <PickContainer
-      index={index}
+      slot={index}
       hero={hero}
       draggable="true"
       onDragStart={e => handleDragStart(e)}
       onDragOver={e => handleDragOver(e)}
-      onDrop={e => handleDrop(e)}
+      onDrop={e => handleDrop(e, team)}
     >
       <Input
         onChange={handlePlayerNameChange}

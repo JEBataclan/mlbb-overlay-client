@@ -92,16 +92,16 @@ const Controller = () => {
 
   const swapChampions = (team, fromItem, toItem) => {
     setPicksAndBans(previousPicksAndBans => {
-      let newPicksAndBans = Object.assign({}, picksAndBans);
-      [newPicksAndBans[team][fromItem.index], newPicksAndBans[team][toItem.index]] = [newPicksAndBans[team][toItem.index], newPicksAndBans[team][fromItem.index]]
+      let newPicksAndBans = Object.assign({}, previousPicksAndBans);
+      [newPicksAndBans[team]['picks'][fromItem.index], newPicksAndBans[team]['picks'][toItem.index]] = [newPicksAndBans[team]['picks'][toItem.index], newPicksAndBans[team]['picks'][fromItem.index]]
+      console.log(newPicksAndBans);
       socket.emit("sendPicksAndBans", newPicksAndBans);
       return newPicksAndBans;
     })
   };
 
   const handleDragStart = (event) => {
-    console.log(event.target.getAttribute('index'));
-    let fromItem = JSON.stringify({ id: event.currentTarget.slot });
+    let fromItem = JSON.stringify({ index: event.currentTarget.slot });
     event.dataTransfer.setData("dragContent", fromItem);
   };
 
@@ -110,13 +110,13 @@ const Controller = () => {
     return false;
   };
 
-  const handleDrop = (event) => {
+  const handleDrop = (event, team) => {
     event.preventDefault();
 
     let fromItem = JSON.parse(event.dataTransfer.getData("dragContent"));
-    let toItem = { id: event.currentTarget.index };
+    let toItem = { index: event.currentTarget.slot };
 
-    //swapChampions(fromItem, toItem);
+    swapChampions(team, fromItem, toItem);
     return false;
   };
 
@@ -218,7 +218,17 @@ const Controller = () => {
         <PicksContainer>
           {picksAndBans.blue.picks.map((item, index) => {
             return (
-              <Pick key={`blue-pick-${index}`} index={index} hero={item} handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'blue', index) }} handleTeamInfosBlur={handleTeamInfosBlur} handleDragStart={handleDragStart} handleDragOver={handleDragOver} handleDrop={handleDrop} />
+              <Pick
+                key={`blue-pick-${index}`}
+                index={index}
+                team="blue"
+                hero={item}
+                handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'blue', index) }}
+                handleTeamInfosBlur={handleTeamInfosBlur}
+                handleDragStart={handleDragStart}
+                handleDragOver={handleDragOver}
+                handleDrop={handleDrop}
+              />
             )
           })}
         </PicksContainer>
@@ -236,7 +246,17 @@ const Controller = () => {
         <PicksContainer direction="rtl">
           {picksAndBans.red.picks.map((item, index) => {
             return (
-              <Pick key={`red-pick-${index}`} index={index} hero={item} handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'red', index) }} handleTeamInfosBlur={handleTeamInfosBlur} handleDragStart={handleDragStart} handleDragOver={handleDragOver} handleDrop={handleDrop} />
+              <Pick
+                key={`red-pick-${index}`}
+                index={index}
+                team="red"
+                hero={item}
+                handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'red', index) }}
+                handleTeamInfosBlur={handleTeamInfosBlur}
+                handleDragStart={handleDragStart}
+                handleDragOver={handleDragOver}
+                handleDrop={handleDrop}
+              />
             )
           })}
         </PicksContainer>

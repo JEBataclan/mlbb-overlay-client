@@ -120,7 +120,6 @@ const Overlay = () => {
 
       <PicksContainer team="blue">
         {picksAndBans.blue.picks.map((item, index) => {
-          console.log(`blue ${index}: ${picksAndBans.blue.picksCount === index && SEQUENCE[counter] === 'blue' && (phase === "PICK PHASE 1" || phase === "PICK PHASE 2")}`)
           return (
             <Pick
               key={`blue-pick-${index}`}
@@ -149,7 +148,6 @@ const Overlay = () => {
 
       <PicksContainer team="red">
         {picksAndBans.red.picks.map((item, index) => {
-          console.log(`red ${index}: ${picksAndBans.red.picksCount === index && SEQUENCE[counter] === 'red' && (phase === "PICK PHASE 1" || phase === "PICK PHASE 2")}`)
           return (
             <Pick
               key={`red-pick-${index}`}
