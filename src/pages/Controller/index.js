@@ -125,16 +125,18 @@ const Controller = () => {
   };
 
   const handleTeamInfosChange = (e, team) => {
-    setTeamInfos(previousTeamInfos => {
-      previousTeamInfos[team][e.target.name] = e.target.value;
-      return previousTeamInfos;
+    setTeamInfos(prevTeamInfos => {
+      let newTeamInfos = Object.assign({}, prevTeamInfos);
+      newTeamInfos[team][e.target.name] = e.target.value;
+      return newTeamInfos;
     })
   }
 
   const handleMatchInfoChange = (e) => {
-    setMatchInfo(previousMatchInfo => {
-      previousMatchInfo[e.target.name] = e.target.value;
-      return previousMatchInfo;
+    setMatchInfo(prevMatchInfo => {
+      let newMatchInfo = Object.assign({}, prevMatchInfo);
+      newMatchInfo[e.target.name] = e.target.value;
+      return newMatchInfo;
     })
   }
 
@@ -271,20 +273,20 @@ const Controller = () => {
     <ControllerContainer>
       <TopSection>
         <TeamInfosContainer backgroundColor={colors.blue}>
-          <Input name="teamInitials" placeholder="Team Initials" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
-          <Input name="teamName" placeholder="Team Name" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
-          <Input name="score" type="number" placeholder="Score" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamInitials" placeholder="Team Initials" value={teamInfos.blue.teamInitials} onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" placeholder="Team Name" value={teamInfos.blue.teamName} onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" placeholder="Score" value={teamInfos.blue.score} onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
         </TeamInfosContainer>
 
         <MatchInfoContainer>
-          <Input name="round" placeholder="Round" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
-          <Input name="game" placeholder="Game #" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+          <Input name="round" placeholder="Round" value={matchInfo.round} onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+          <Input name="game" placeholder="Game #" value={matchInfo.game} onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
         </MatchInfoContainer>
 
         <TeamInfosContainer backgroundColor={colors.red}>
-          <Input name="teamInitials" placeholder="Team Initials" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
-          <Input name="teamName" placeholder="Team Name" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
-          <Input name="score" type="number" placeholder="Score" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamInitials" placeholder="Team Initials" value={teamInfos.red.teamInitials} onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" placeholder="Team Name" value={teamInfos.red.teamName} onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" placeholder="Score" value={teamInfos.red.score} onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
         </TeamInfosContainer>
       </TopSection>
 
