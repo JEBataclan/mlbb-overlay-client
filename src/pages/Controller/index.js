@@ -1,0 +1,273 @@
+import React, { useState, useEffect } from 'react';
+import openSocket from "socket.io-client";
+import * as colors from "../../colors";
+import { SEQUENCE } from '../../constants';
+import {
+  Input,
+  Button,
+  TopSection,
+  MiddleSection,
+  BottomSection,
+  ControllerContainer,
+  TeamInfosContainer,
+  PicksContainer,
+  BansContainer,
+  HeroesContainer,
+  HeroesWrapper,
+  Timer,
+  MatchInfoContainer,
+  ButtonsContainer,
+} from './controller.elements';
+import Pick from './Pick';
+import Ban from './Ban';
+import Hero from './Hero';
+
+const socket = openSocket("http://localhost:5000", {
+  transports: ["websocket"],
+});
+
+const Controller = () => {
+  const [counter, setCounter] = useState(0);
+  const [phase, setPhase] = useState("");
+  const [heroes, setHeroes] = useState([]);
+  const [teamInfos, setTeamInfos] = useState({
+    blue: {
+      teamName: "",
+      teamInitials: "",
+      score: 0,
+      players: ['', '', '', '', ''],
+    },
+    red: {
+      teamName: "",
+      teamInitials: "",
+      score: 0,
+      players: ['', '', '', '', ''],
+    }
+  })
+  const [matchInfo, setMatchInfo] = useState({
+    round: "",
+    game: "",
+  })
+  const [picksAndBans, setPicksAndBans] = useState({
+    blue: {
+      picks: ['', '', '', '', ''],
+      picksCount: 0,
+      bans: ['', '', ''],
+      bansCount: 0,
+    },
+    red: {
+      picks: ['', '', '', '', ''],
+      picksCount: 0,
+      bans: ['', '', ''],
+      bansCount: 0,
+    }
+  })
+
+  useEffect(() => {
+    fetch("heroes.json")
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        setHeroes(json.heroes);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }, [])
+
+  useEffect(() => {
+    if (counter >= 0 && counter <= 3) {
+      setPhase("BAN PHASE 1");
+    } else if (counter >= 4 && counter <= 9) {
+      setPhase("PICK PHASE 1");
+    } else if (counter >= 10 && counter <= 11) {
+      setPhase("BAN PHASE 2");
+    } else if (counter >= 12 && counter <= 15) {
+      setPhase("PICK PHASE 2");
+    }
+
+    socket.emit("sendPhaseAndCounter", { counter, phase });
+  }, [counter, phase])
+
+  const swapChampions = (team, fromItem, toItem) => {
+    setPicksAndBans(previousPicksAndBans => {
+      let newPicksAndBans = Object.assign({}, picksAndBans);
+      [newPicksAndBans[team][fromItem.index], newPicksAndBans[team][toItem.index]] = [newPicksAndBans[team][toItem.index], newPicksAndBans[team][fromItem.index]]
+      socket.emit("sendPicksAndBans", newPicksAndBans);
+      return newPicksAndBans;
+    })
+  };
+
+  const handleDragStart = (event) => {
+    console.log(event.target.getAttribute('index'));
+    let fromItem = JSON.stringify({ id: event.currentTarget.slot });
+    event.dataTransfer.setData("dragContent", fromItem);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    return false;
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+
+    let fromItem = JSON.parse(event.dataTransfer.getData("dragContent"));
+    let toItem = { id: event.currentTarget.index };
+
+    //swapChampions(fromItem, toItem);
+    return false;
+  };
+
+  const handleTeamInfosChange = (e, team) => {
+    setTeamInfos(previousTeamInfos => {
+      previousTeamInfos[team][e.target.name] = e.target.value;
+      return previousTeamInfos;
+    })
+  }
+
+  const handleMatchInfoChange = (e) => {
+    setMatchInfo(previousMatchInfo => {
+      previousMatchInfo[e.target.name] = e.target.value;
+      return previousMatchInfo;
+    })
+  }
+
+  const handleHeroOnClick = (name) => {
+    const team = SEQUENCE[counter];
+    const type = (phase === "BAN PHASE 1" || phase === "BAN PHASE 2") ? 'bans' : 'picks';
+    const index = picksAndBans[team][type === "bans" ? "bansCount" : "picksCount"];
+
+    setPicksAndBans((previousPicksAndBans) => {
+      let newPicksAndBans = Object.assign({}, previousPicksAndBans);
+
+      newPicksAndBans[team][type][index] = name;
+      socket.emit("sendPicksAndBans", newPicksAndBans);
+      return newPicksAndBans;
+    })
+  }
+
+  const handleLockIn = () => {
+    const team = SEQUENCE[counter];
+    const type = (phase === "BAN PHASE 1" || phase === "BAN PHASE 2") ? 'bans' : 'picks';
+    const index = picksAndBans[team][type === "bans" ? "bansCount" : "picksCount"];
+
+    if (picksAndBans[team][type][index] === '') {
+      alert("You must pick a hero before locking in.")
+    } else {
+      setCounter(counter + 1);
+      setHeroes(prevHeroes => {
+        let newHeroes = prevHeroes.filter((hero) => {
+          return hero.name !== picksAndBans[team][type][index];
+        })
+
+        return newHeroes;
+      })
+      setPicksAndBans((previousPicksAndBans) => {
+        let newPicksAndBans = Object.assign({}, previousPicksAndBans);
+
+        newPicksAndBans[team][type === "bans" ? "bansCount" : "picksCount"]++;
+        socket.emit("sendPicksAndBans", newPicksAndBans);
+        return newPicksAndBans;
+      })
+    }
+  }
+
+  const handlePlayerNameChange = (e, team, index) => {
+    setTeamInfos(prevTeamInfos => {
+      let newTeamInfos = Object.assign({}, prevTeamInfos);
+
+      newTeamInfos[team]['players'][index] = e.target.value;
+      console.log(newTeamInfos);
+      return newTeamInfos;
+    })
+  }
+
+  const handleTeamInfosBlur = () => {
+    socket.emit("sendTeamInfos", teamInfos);
+  }
+
+  const handleMatchInfoBlur = () => {
+    socket.emit("sendMatchInfo", matchInfo);
+  }
+
+  return (
+    <ControllerContainer>
+      <TopSection>
+        <TeamInfosContainer backgroundColor={colors.blue}>
+          <Input name="teamInitials" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" onChange={(e) => handleTeamInfosChange(e, "blue")} onBlur={handleTeamInfosBlur} />
+        </TeamInfosContainer>
+
+        <MatchInfoContainer>
+          <Timer>:35</Timer>
+          <Input name="round" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+          <Input name="game" onChange={(e) => handleMatchInfoChange(e)} onBlur={handleMatchInfoBlur} />
+        </MatchInfoContainer>
+
+        <TeamInfosContainer backgroundColor={colors.red}>
+          <Input name="teamInitials" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="teamName" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+          <Input name="score" type="number" onChange={(e) => handleTeamInfosChange(e, "red")} onBlur={handleTeamInfosBlur} />
+        </TeamInfosContainer>
+      </TopSection>
+
+      <MiddleSection>
+        <PicksContainer>
+          {picksAndBans.blue.picks.map((item, index) => {
+            return (
+              <Pick key={`blue-pick-${index}`} index={index} hero={item} handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'blue', index) }} handleTeamInfosBlur={handleTeamInfosBlur} handleDragStart={handleDragStart} handleDragOver={handleDragOver} handleDrop={handleDrop} />
+            )
+          })}
+        </PicksContainer>
+
+        <HeroesContainer>
+          <HeroesWrapper>
+            {heroes.map((item, index) => {
+              return (
+                <Hero key={item.name} hero={item.name} handleHeroOnClick={handleHeroOnClick} />
+              )
+            })}
+          </HeroesWrapper>
+        </HeroesContainer>
+
+        <PicksContainer direction="rtl">
+          {picksAndBans.red.picks.map((item, index) => {
+            return (
+              <Pick key={`red-pick-${index}`} index={index} hero={item} handlePlayerNameChange={(e) => { handlePlayerNameChange(e, 'red', index) }} handleTeamInfosBlur={handleTeamInfosBlur} handleDragStart={handleDragStart} handleDragOver={handleDragOver} handleDrop={handleDrop} />
+            )
+          })}
+        </PicksContainer>
+      </MiddleSection>
+
+      <BottomSection>
+        <BansContainer>
+          {picksAndBans.blue.bans.map((item, index) => {
+            return (
+              <Ban key={`blue-ban-${index}`} hero={item} />
+            )
+          })}
+        </BansContainer>
+
+        <ButtonsContainer>
+          <Button onClick={handleLockIn} disabled={counter > 15}>LOCK IN</Button>
+          <Button onClick={() => { }}>START TIMER</Button>
+          <Button onClick={() => { }}>CLEAR PICKS & BANS</Button>
+          <Button onClick={() => { }}>CLEAR TEAM INFOS</Button>
+        </ButtonsContainer>
+
+        <BansContainer direction="rtl">
+          {picksAndBans.red.bans.map((item, index) => {
+            return (
+              <Ban key={`red-ban-${index}`} hero={item} />
+            )
+          })}
+        </BansContainer>
+      </BottomSection>
+    </ControllerContainer>
+  )
+}
+
+export default Controller

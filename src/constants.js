@@ -1,0 +1,1 @@
+export const SEQUENCE = ['blue', 'red', 'blue', 'red', 'blue', 'red', 'red', 'blue', 'blue', 'red', 'red', 'blue', 'red', 'blue', 'blue', 'red'];
