@@ -31,7 +31,7 @@ const BanSplash = styled.div`
 const Ban = ({ team, hero, active }) => {
   return (
     <BanContainer team={team}>
-      <BanSplash hero={hero} active={active} />
+      <BanSplash hero={hero} active={active} team={team}/>
     </BanContainer>
   )
 }

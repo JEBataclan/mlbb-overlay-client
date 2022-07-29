@@ -27,13 +27,38 @@ export const BottomSection = styled.div`
 export const ButtonsContainer = styled.div``;
 
 export const TeamInfosContainer = styled.div`
-    background-color: ${({backgroundColor}) => backgroundColor && backgroundColor};
+    background-color: ${({ backgroundColor }) => backgroundColor && backgroundColor};
     width: 40%;
 `;
 
 export const MatchInfoContainer = styled.div`
     width: 20%;
 `;
+
+export const SelectionContainer = styled.div`
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`
+export const Options = styled.div`
+    display: flex;
+    width: 90%;
+    background-color: black;
+    color: white;
+`
+export const UnorderedList = styled.ul`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    list-style-type: none;
+`
+export const ListItem = styled.li`
+    &:last-child {
+       
+    }
+`
 
 export const HeroesContainer = styled.div`
     padding: 1em;

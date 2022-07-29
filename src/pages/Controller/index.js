@@ -12,6 +12,10 @@ import {
   TeamInfosContainer,
   PicksContainer,
   BansContainer,
+  SelectionContainer,
+  Options,
+  UnorderedList,
+  ListItem,
   HeroesContainer,
   HeroesWrapper,
   Timer,
@@ -29,6 +33,7 @@ const socket = openSocket("http://localhost:5000", {
 const Controller = () => {
   const [counter, setCounter] = useState(0);
   const [phase, setPhase] = useState("");
+  const [filter, setFilter] = useState("");
   const [heroes, setHeroes] = useState([]);
   const [teamInfos, setTeamInfos] = useState({
     blue: {
@@ -94,7 +99,6 @@ const Controller = () => {
     setPicksAndBans(previousPicksAndBans => {
       let newPicksAndBans = Object.assign({}, previousPicksAndBans);
       [newPicksAndBans[team]['picks'][fromItem.index], newPicksAndBans[team]['picks'][toItem.index]] = [newPicksAndBans[team]['picks'][toItem.index], newPicksAndBans[team]['picks'][fromItem.index]]
-      console.log(newPicksAndBans);
       socket.emit("sendPicksAndBans", newPicksAndBans);
       return newPicksAndBans;
     })
@@ -179,7 +183,6 @@ const Controller = () => {
       let newTeamInfos = Object.assign({}, prevTeamInfos);
 
       newTeamInfos[team]['players'][index] = e.target.value;
-      console.log(newTeamInfos);
       return newTeamInfos;
     })
   }
@@ -233,15 +236,42 @@ const Controller = () => {
           })}
         </PicksContainer>
 
-        <HeroesContainer>
-          <HeroesWrapper>
-            {heroes.map((item, index) => {
-              return (
-                <Hero key={item.name} hero={item.name} handleHeroOnClick={handleHeroOnClick} />
-              )
-            })}
-          </HeroesWrapper>
-        </HeroesContainer>
+        <SelectionContainer>
+          <Options>
+            <UnorderedList>
+              <ListItem onClick={() => setFilter(filter === "tank" ? "" : "tank")}>Tank</ListItem>
+              <ListItem onClick={() => setFilter(filter === "fighter" ? "" : "fighter")}>Fighter</ListItem>
+              <ListItem onClick={() => setFilter(filter === "assassin" ? "" : "assassin")}>Assassin</ListItem>
+              <ListItem onClick={() => setFilter(filter === "mage" ? "" : "mage")}>Mage</ListItem>
+              <ListItem onClick={() => setFilter(filter === "marksman" ? "" : "marksman")}>Marksman</ListItem>
+              <ListItem onClick={() => setFilter(filter === "support" ? "" : "support")}>Support</ListItem>
+              <ListItem>
+                <input
+                  id="filter"
+                  name="filter"
+                  type="text"
+                  value={filter}
+                  onChange={(event) => setFilter(event.target.value)}
+                />
+              </ListItem>
+            </UnorderedList>
+          </Options>
+
+          <HeroesContainer>
+            <HeroesWrapper>
+              {heroes.filter(
+                (item) =>
+                  item.name.toLowerCase().includes(filter.toLowerCase()) ||
+                  item.role.toLowerCase().includes(filter.toLowerCase()) ||
+                  filter === ""
+              ).map((item, index) => {
+                return (
+                  <Hero key={item.name} hero={item.name} handleHeroOnClick={handleHeroOnClick} />
+                )
+              })}
+            </HeroesWrapper>
+          </HeroesContainer>
+        </SelectionContainer>
 
         <PicksContainer direction="rtl">
           {picksAndBans.red.picks.map((item, index) => {
