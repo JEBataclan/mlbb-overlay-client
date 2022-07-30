@@ -159,7 +159,7 @@ const Controller = () => {
     const type = (phase === "BAN PHASE 1" || phase === "BAN PHASE 2") ? 'bans' : 'picks';
     const index = picksAndBans[team][type === "bans" ? "bansCount" : "picksCount"];
 
-    if (picksAndBans[team][type][index] === '') {
+    if (picksAndBans[team][type][index] === '' && (phase === 'PICK PHASE 1' || phase === 'PICK PHASE 2')) {
       alert("You must pick a hero before locking in.")
     } else {
       setCounter(counter + 1);
