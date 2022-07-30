@@ -66,6 +66,7 @@ const PlayerNameContainer = styled.div`
     width: 420px;
     height: 40px;
     background: ${({ team }) => team === 'blue' ? `linear-gradient(270deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 100%)` : `linear-gradient(90deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,0) 100%);`};
+    padding: 0 16px;
 `;
 
 const PlayerName = styled.p`
@@ -73,8 +74,8 @@ const PlayerName = styled.p`
     font-size: 36px;
     line-height: 40px;
     font-weight: 700;
-    direction: ${({ team }) => team === 'blue' ? 'rtl' : 'ltr'};
-    text-indent: 16px;
+    /*direction: ${({ team }) => team === 'blue' ? 'rtl' : 'ltr'};*/
+    text-align: ${({ team }) => team === 'blue' ? 'right' : 'left'};
 `;
 
 const Pick = ({ team, hero, playerName, active }) => {

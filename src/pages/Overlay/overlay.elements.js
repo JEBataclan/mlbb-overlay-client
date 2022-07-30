@@ -22,7 +22,8 @@ export const TeamInfosContainer = styled.div`
         }
     `) : (`
         right: 380px;
-        direction: rtl;
+        /*direction: rtl;*/
+        text-align: right;
         color: ${colors.red};
         transform: skewX(-20deg);
         & > * {
