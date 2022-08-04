@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/mlbb-overlay-client/static/js/main.3b661f39.js",
+    "main.js": "/mlbb-overlay-client/static/js/main.afb21f27.js",
     "static/media/Terizla.png": "/mlbb-overlay-client/static/media/Terizla.84971f74180fec4a26a3.png",
     "static/media/Badang.png": "/mlbb-overlay-client/static/media/Badang.7ab7e117820e0fe0adf4.png",
     "static/media/Atlas.png": "/mlbb-overlay-client/static/media/Atlas.b90a47dfe08e809f4894.png",
@@ -56,7 +56,7 @@
     "static/media/Natalia.png": "/mlbb-overlay-client/static/media/Natalia.7e6a5bf299b6b2da7200.png",
     "static/media/Angela.png": "/mlbb-overlay-client/static/media/Angela.9a11c3ce719f01db4722.png",
     "static/media/Natan.png": "/mlbb-overlay-client/static/media/Natan.d9665f76290afc3ac632.png",
-    "static/media/Dyroth.png": "/mlbb-overlay-client/static/media/Dyroth.517fa9d8ba10fbe9604a.png",
+    "static/media/Dyrroth.png": "/mlbb-overlay-client/static/media/Dyrroth.2ff365f9a151f686bbd2.png",
     "static/media/Gloo.png": "/mlbb-overlay-client/static/media/Gloo.0a4ec4f25ea155a73b64.png",
     "static/media/Brody.png": "/mlbb-overlay-client/static/media/Brody.df5cf9d9144f7dd431c6.png",
     "static/media/Luo Yi.png": "/mlbb-overlay-client/static/media/Luo Yi.ce0ea953c4817d41d771.png",
@@ -95,7 +95,7 @@
     "static/media/Pharsa.png": "/mlbb-overlay-client/static/media/Pharsa.3317de84c1ca0adf48a1.png",
     "static/media/Minsitthar.png": "/mlbb-overlay-client/static/media/Minsitthar.958587c78572b7120d0c.png",
     "static/media/Faramis.png": "/mlbb-overlay-client/static/media/Faramis.1d3fb3ae0bb364077561.png",
-    "static/media/Carmilla.png": "/mlbb-overlay-client/static/media/Carmilla.8692b143e9dfbb377525.png",
+    "static/media/Camilla.png": "/mlbb-overlay-client/static/media/Camilla.a20dcde41273e2cb2e7d.png",
     "static/media/Yi Sun-shin.png": "/mlbb-overlay-client/static/media/Yi Sun-shin.35ed0c78b02db69f967b.png",
     "static/media/Ruby.png": "/mlbb-overlay-client/static/media/Ruby.82e28c6021d86892aeb0.png",
     "static/media/Zhask.png": "/mlbb-overlay-client/static/media/Zhask.e58d2f4b8805b906abfa.png",
@@ -117,13 +117,11 @@
     "static/media/Khufra.png": "/mlbb-overlay-client/static/media/Khufra.5aca25da31c95107eaac.png",
     "static/media/Lapu-Lapu.png": "/mlbb-overlay-client/static/media/Lapu-Lapu.2d2a1193705435d5192f.png",
     "static/media/Aldous.png": "/mlbb-overlay-client/static/media/Aldous.1b8bf9b25843358d0194.png",
-    "static/media/Dyrroth.png": "/mlbb-overlay-client/static/media/Dyrroth.2ff365f9a151f686bbd2.png",
-    "static/media/Camilla.png": "/mlbb-overlay-client/static/media/Camilla.a20dcde41273e2cb2e7d.png",
     "static/media/gear-logo.svg": "/mlbb-overlay-client/static/media/gear-logo.b79a0d50b53e1cfe10ad1a941a041e28.svg",
     "index.html": "/mlbb-overlay-client/index.html",
-    "main.3b661f39.js.map": "/mlbb-overlay-client/static/js/main.3b661f39.js.map"
+    "main.afb21f27.js.map": "/mlbb-overlay-client/static/js/main.afb21f27.js.map"
   },
   "entrypoints": [
-    "static/js/main.3b661f39.js"
+    "static/js/main.afb21f27.js"
   ]
 }
