@@ -26,9 +26,12 @@ import Pick from './Pick';
 import Ban from './Ban';
 import Hero from './Hero';
 
+// https://mlbb-overlay-server.herokuapp.com
+// http://localhost:5000/
 const socket = openSocket("https://mlbb-overlay-server.herokuapp.com", {
   transports: ["websocket"],
 });
+
 
 const Controller = () => {
   const [counter, setCounter] = useState(0);

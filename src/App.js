@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<MinimalLayout />}>
             <Route index element={<Controller />} />
             <Route path="controller" element={<Controller />} />
-            <Route path="overlay" element={<Overlay />} />
+            <Route path="overlay/:room" element={<Overlay />} />
           </Route>
         </Routes>
       </BrowserRouter></>

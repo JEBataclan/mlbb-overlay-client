@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom';
 import openSocket from "socket.io-client";
 import { SEQUENCE } from '../../constants';
 import {
@@ -25,12 +26,15 @@ import {
 import Pick from "./Pick";
 import Ban from "./Ban";
 
+// https://mlbb-overlay-server.herokuapp.com
+// http://localhost:5000/
 const socket = openSocket("https://mlbb-overlay-server.herokuapp.com", {
   transports: ["websocket"],
 });
 
 
 const Overlay = () => {
+  let { room } = useParams();
   const [counter, setCounter] = useState(0);
   const [phase, setPhase] = useState("BAN PHASE 1");
   const [teamInfos, setTeamInfos] = useState({
@@ -67,12 +71,12 @@ const Overlay = () => {
   })
 
   useEffect(() => {
-    /*
-    socket.on("receivePhaseAndCounter", ({ counter, phase }) => {
-      setCounter(counter);
+    //socket.on("receivePhaseAndCounter", ({ counter, phase }) => {
+    ////  setCounter(counter);
       setPhase(phase);
-    })
-    */
+    //})
+
+    socket.emit("join-room", room);
 
     socket.on("receiveCounter", (counter) => {
       setCounter(counter);
