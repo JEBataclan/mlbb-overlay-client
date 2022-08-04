@@ -25,7 +25,7 @@ import {
 import Pick from "./Pick";
 import Ban from "./Ban";
 
-const socket = openSocket("http://localhost:5000", {
+const socket = openSocket("https://mlbb-overlay-server.herokuapp.com", {
   transports: ["websocket"],
 });
 
@@ -35,14 +35,14 @@ const Overlay = () => {
   const [phase, setPhase] = useState("BAN PHASE 1");
   const [teamInfos, setTeamInfos] = useState({
     blue: {
-      teamName: "",
-      teamInitials: "",
+      name: "",
+      initials: "",
       score: 0,
       players: ['', '', '', '', ''],
     },
     red: {
-      teamName: "",
-      teamInitials: "",
+      name: "",
+      initials: "",
       score: 0,
       players: ['', '', '', '', ''],
     }
@@ -67,9 +67,15 @@ const Overlay = () => {
   })
 
   useEffect(() => {
+    /*
     socket.on("receivePhaseAndCounter", ({ counter, phase }) => {
       setCounter(counter);
       setPhase(phase);
+    })
+    */
+
+    socket.on("receiveCounter", (counter) => {
+      setCounter(counter);
     })
 
     socket.on("receiveTeamInfos", (teamInfos) => {
@@ -85,13 +91,27 @@ const Overlay = () => {
     })
   }, [])
 
+  useEffect(() => {
+    if (counter >= 0 && counter <= 3) {
+      setPhase("BAN PHASE 1");
+    } else if (counter >= 4 && counter <= 9) {
+      setPhase("PICK PHASE 1");
+    } else if (counter >= 10 && counter <= 11) {
+      setPhase("BAN PHASE 2");
+    } else if (counter >= 12 && counter <= 15) {
+      setPhase("PICK PHASE 2");
+    }
+
+    socket.emit("sendPhaseAndCounter", { counter, phase });
+  }, [counter])
+
   return (
     <OverlayContainer>
       <TeamInfosContainer team="blue">
         <TeamInfosWrapper>
-          <TeamInitials>{teamInfos.blue.teamInitials}</TeamInitials>
+          <TeamInitials>{teamInfos.blue.initials}</TeamInitials>
           <TeamNameContainer team="blue">
-            <TeamName>{teamInfos.blue.teamName}</TeamName>
+            <TeamName>{teamInfos.blue.name}</TeamName>
           </TeamNameContainer>
         </TeamInfosWrapper>
       </TeamInfosContainer>
@@ -111,9 +131,9 @@ const Overlay = () => {
 
       <TeamInfosContainer team="red">
         <TeamInfosWrapper>
-          <TeamInitials>{teamInfos.red.teamInitials}</TeamInitials>
+          <TeamInitials>{teamInfos.red.initials}</TeamInitials>
           <TeamNameContainer team="red">
-            <TeamName>{teamInfos.red.teamName}</TeamName>
+            <TeamName>{teamInfos.red.name}</TeamName>
           </TeamNameContainer>
         </TeamInfosWrapper>
       </TeamInfosContainer>

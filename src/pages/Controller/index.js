@@ -26,7 +26,7 @@ import Pick from './Pick';
 import Ban from './Ban';
 import Hero from './Hero';
 
-const socket = openSocket("http://localhost:5000", {
+const socket = openSocket("https://mlbb-overlay-server.herokuapp.com", {
   transports: ["websocket"],
 });
 
