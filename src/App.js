@@ -1,5 +1,6 @@
 import {
   BrowserRouter,
+  HashRouter,
   Routes,
   Route,
 } from "react-router-dom";
@@ -13,7 +14,7 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<MinimalLayout />}>
             <Route index element={<Controller />} />
@@ -21,7 +22,8 @@ function App() {
             <Route path="overlay/:room" element={<Overlay />} />
           </Route>
         </Routes>
-      </BrowserRouter></>
+      </HashRouter>
+    </>
   );
 }
 
