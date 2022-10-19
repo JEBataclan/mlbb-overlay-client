@@ -32,7 +32,6 @@ const socket = openSocket("https://mlbb-overlay-server.herokuapp.com", {
   transports: ["websocket"],
 });
 
-
 const Overlay = () => {
   let { room } = useParams();
   const [counter, setCounter] = useState(0);
@@ -72,8 +71,8 @@ const Overlay = () => {
 
   useEffect(() => {
     //socket.on("receivePhaseAndCounter", ({ counter, phase }) => {
-    ////  setCounter(counter);
-      setPhase(phase);
+    //  setCounter(counter);
+    //  setPhase(phase);
     //})
 
     socket.emit("join-room", room);
